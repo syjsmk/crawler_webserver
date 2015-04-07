@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+<script src="./javascripts/bower_components/angular/angular.js"></script>
+<script src="./javascripts/bower_components/ng-file-upload-shim/angular-file-upload-shim.js"></script>
+<script src="./javascripts/bower_components/ng-file-upload-shim/angular-file-upload.js"></script>
+<script src="./javascripts/app.js"></script>
+
+</head>
+
+<body>
+
+<div ng-controller="fileUploadCtrl">
+
+<p>Name: <input type="text" ng-model="name"></p>
+<p>You wrote: {{name}}</p>
+<button type="button" ng-file-select ng-model="files">button</button>
+<div class="button" ng-file-select ng-model="files">select file</div>
+
+
+
+
+</div>
+
+<div ng-controller="urlCtrl">
+<p>url: <input type="text" ng-model="url"></p>
+<button type="button" ng-click="sendUrl(url)">url send button</button>
+</div>
+
+</body>
+
+</html>
