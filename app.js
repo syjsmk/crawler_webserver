@@ -10,6 +10,8 @@ var users = require('./routes/users');
 //var angular = require('./routes/angular');
 var upload = require('./routes/upload');
 
+var multiparty = require('connect-multiparty');
+
 var app = express();
 
 // view engine setup
@@ -27,6 +29,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use(connect.multipart({ uploadDir: './temp'}));
+
+// It can save file under the project
+// TODO: save file to /uploads
+app.use(multiparty({uploadDir: __dirname}));
 
 app.use('/', routes);
 app.use('/users', users);
