@@ -2,6 +2,7 @@ var http = require('http');
 var exec = require('child_process').exec;
 
 
+//TODO: page refreshed periodically. why?
 var crawling = function(url) {
 	// console.log('url in crawling');
 	// console.log(url);    
@@ -31,6 +32,25 @@ var crawling = function(url) {
 
 	    var matches_array = body.match(regex);
 	    console.log(matches_array);
+
+	    // TODO: cannot use foreach?
+	    //for(var extractedUrl in matches_array) {
+	    for(var i = 0; i < matches_array.length; i ++) {
+		console.log(matches_array[i]);
+		
+		//		console.log(extractedUrl);
+
+		//TODO: save file path setting
+		var child = exec('wget ' + matches_array[i], function(error, stdout, stderr) {
+    		    console.log('stdout : ' + stdout);
+    		    console.log('stderr : ' + stderr);
+    		    if(error != null) {
+    			console.log('exec error : ' + error);
+    		    };
+		});
+
+	    }
+
     	});
 	
     }).on('error', function(e) {
@@ -41,13 +61,8 @@ var crawling = function(url) {
 
     // OK
     // var url = 'http://livedoor.blogimg.jp/otanews/imgs/2/2/22a5077d.jpg';
-    // var child = exec('wget ' + url, function(error, stdout, stderr) {
-    // 	console.log('stdout : ' + stdout);
-    // 	console.log('stderr : ' + stderr);
-    // 	if(error != null) {
-    // 	    console.log('exec error : ' + error);
-    // 	};
-    // });
+
+    
 
     
 };
