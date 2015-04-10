@@ -6,6 +6,8 @@ var crawling = function(url) {
 	// console.log('url in crawling');
 	// console.log(url);    
 
+    var regex = /http[^\s]*jpg/gi;
+    
 
     console.log('url : ' + url);
 
@@ -25,12 +27,17 @@ var crawling = function(url) {
     	    body += chunk;
     	});
     	res.on('end', function() {
-    	    console.log(body);
+    	    // console.log(body);
+
+	    var matches_array = body.match(regex);
+	    console.log(matches_array);
     	});
 	
     }).on('error', function(e) {
     	console.log('got error: ' + e.message);
     });
+
+
 
     // OK
     // var url = 'http://livedoor.blogimg.jp/otanews/imgs/2/2/22a5077d.jpg';

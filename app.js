@@ -33,6 +33,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // It can save file under the project
 // TODO: save file to /uploads
 app.use(multiparty({uploadDir: __dirname}));
+//app.use(multiparty({uploadDir: path.join(__dirname, 'uploads')}));
+
+console.log('dirname : ' + __dirname);
+console.log(__dirname + '/uploads');
+console.log('temp : ' + path.join(__dirname, 'uploads'));
 
 app.use('/', routes);
 app.use('/users', users);
