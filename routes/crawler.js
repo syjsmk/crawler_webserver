@@ -10,7 +10,8 @@ var parser = new htmlparser.Parser({
 });
 
 
-//TODO: page refreshed periodically. why?
+// TODO: url may become text + url (from mt2)
+// TODO: use htmlparser for extract article title from html for folder name
 var crawling = function(url) {
 	// console.log('url in crawling');
 	// console.log(url);    
