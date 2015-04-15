@@ -1,5 +1,13 @@
 var http = require('http');
 var exec = require('child_process').exec;
+var htmlparser = require('htmlparser2');
+var parser = new htmlparser.Parser({
+    onopentag: function(name, attributes) {
+	if(name === "h1" && attributes.class === "entry_title") {
+	    console.log('attributes.class : ' + attributes.class);
+	}
+    }
+});
 
 
 //TODO: page refreshed periodically. why?
@@ -30,6 +38,9 @@ var crawling = function(url) {
     	res.on('end', function() {
     	    // console.log(body);
 
+	    // parser.write(body);
+	    // parser.end();
+
 	    var matches_array = body.match(regex);
 	    console.log(matches_array);
 
@@ -40,10 +51,9 @@ var crawling = function(url) {
 		
 		//		console.log(extractedUrl);
 
-		//TODO: save file path setting
-		var child = exec('wget ' + matches_array[i], function(error, stdout, stderr) {
-    		    console.log('stdout : ' + stdout);
-    		    console.log('stderr : ' + stderr);
+		var child = exec('wget -P downloads ' + matches_array[i], function(error, stdout, stderr) {
+    		    // console.log('stdout : ' + stdout);
+    		    // console.log('stderr : ' + stderr);
     		    if(error != null) {
     			console.log('exec error : ' + error);
     		    };

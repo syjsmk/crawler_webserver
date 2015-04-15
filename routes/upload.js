@@ -43,6 +43,8 @@ router.post('/', multipartyMiddleware, function(req, res, next) {
 
     //crawling(req.body.data);
     crawler.crawling(req.body.data);
+
+    res.sendStatus(200);
     
 });
 
