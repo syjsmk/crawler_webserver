@@ -13,6 +13,7 @@ var util = require('util');
 
 var isTagOpen = false;
 var articleTitle = '';
+var modifiedArticleTitle = '';
 var parser = new htmlparser.Parser({
 
     onopentag: function(name, attributes) {
@@ -27,7 +28,7 @@ var parser = new htmlparser.Parser({
     ontext: function(text) {
 	if(isTagOpen === true) {
 	    articleTitle = text;
-	    var modifiedArticleTitle = articleTitle.replace(/\s\W/gi, '');
+	    modifiedArticleTitle = articleTitle.replace(/\s\W/gi, '');
 	    
 	    console.log('article Title : ' + articleTitle);
 	    console.log('modified title : ' + modifiedArticleTitle);
@@ -111,13 +112,14 @@ var crawling = function(url) {
 		
 		//		console.log(extractedUrl);
 
+		var child = exec('wget -P ./downloads/' + modifiedArticleTitle + ' ' + matches_array[i], function(error, stdout, stderr) {
 		// var child = exec('wget -P downloads ' + matches_array[i], function(error, stdout, stderr) {
-    		//     // console.log('stdout : ' + stdout);
-    		//     // console.log('stderr : ' + stderr);
-    		//     if(error != null) {
-    		// 	console.log('exec error : ' + error);
-    		//     };
-		// });
+    		    console.log('stdout : ' + stdout);
+    		    console.log('stderr : ' + stderr);
+    		    if(error != null) {
+    			console.log('exec error : ' + error);
+    		    };
+		});
 
 	    }
 
