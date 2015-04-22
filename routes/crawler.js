@@ -5,6 +5,10 @@ var htmlparser = require('htmlparser2');
 var fs = require('fs');
 var util = require('util');
 
+var Iconv = require('iconv').Iconv;
+var iconv = new Iconv('EUC-KR', 'UTF-8//TRANSLIT//IGNORE');
+
+
 // var hasUnicode = require("has-unicode");
 
 // if(hasUnicode()) {
@@ -28,19 +32,18 @@ var parser = new htmlparser.Parser({
     ontext: function(text) {
 	if(isTagOpen === true) {
 	    articleTitle = text;
-	    modifiedArticleTitle = articleTitle.replace(/\s\W/gi, '');
-	    
-	    console.log('article Title : ' + articleTitle);
-	    console.log('modified title : ' + modifiedArticleTitle);
-	    
+	    modifiedArticleTitle = articleTitle.replace(/[\s']/gi, '');
 
-	    // var child = exec('mkdir ./downloads', function(error, stdout, stderr) {
-    	    // 	console.log('stdout : ' + stdout);
-    	    // 	console.log('stderr : ' + stderr);
-    	    // 	if(error != null) {
-    	    // 	    console.log('exec error : ' + error);
-    	    // 	};
-	    // });
+	    console.log('article Title : ' + articleTitle);
+	    console.log('modified Title : ' + modifiedArticleTitle);
+
+	    var child = exec('mkdir ./downloads', function(error, stdout, stderr) {
+    	    	console.log('stdout : ' + stdout);
+    	    	console.log('stderr : ' + stderr);
+    	    	if(error != null) {
+    	    	    console.log('exec error : ' + error);
+    	    	};
+	    });
 
 
 	    var child = exec('mkdir -p ./downloads/' + modifiedArticleTitle, function(error, stdout, stderr) {
@@ -80,12 +83,28 @@ var crawling = function(url) {
     // http.get('http://otanews.livedoor.biz/archives/52018592.html', function(res) {
 
     	var body = '';
-	
-    	// console.log('got response: ' + res.statusCode);
+	var isEucKr = false;
 
+	if(res.headers['content-type'].indexOf('euc-kr') != -1) {
+	    isEucKr = true;
+	}
+
+	console.log('isEucKr : ' + isEucKr);
+
+	// console.log(res.headers);
+	// console.log(res.headers['content-type']);
+
+	// res.setEncoding('utf8');
     	res.on('data', function(chunk) {
 	    // console.log(chunk);
-    	    body += chunk;
+
+	    if(isEucKr) {
+		body += iconv.convert(chunk).toString('UTF-8');
+	    } else {
+		body += chunk;
+	    }
+
+
     	});
     	res.on('end', function() {
     	    // console.log(body);
@@ -128,14 +147,6 @@ var crawling = function(url) {
     }).on('error', function(e) {
     	console.log('got error: ' + e.message);
     });
-
-
-
-    // OK
-    // var url = 'http://livedoor.blogimg.jp/otanews/imgs/2/2/22a5077d.jpg';
-
-    
-
     
 };
 
