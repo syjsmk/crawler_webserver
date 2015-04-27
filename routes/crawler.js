@@ -8,6 +8,8 @@ var util = require('util');
 var Iconv = require('iconv').Iconv;
 var iconv = new Iconv('EUC-KR', 'UTF-8//TRANSLIT//IGNORE');
 
+var downloadsPath = process.env.HOME + '/crawlerDownloads/';
+
 
 // var hasUnicode = require("has-unicode");
 
@@ -37,22 +39,22 @@ var parser = new htmlparser.Parser({
 	    console.log('article Title : ' + articleTitle);
 	    console.log('modified Title : ' + modifiedArticleTitle);
 
-	    var child = exec('mkdir ./downloads', function(error, stdout, stderr) {
+	    // var child = exec('mkdir ./downloads', function(error, stdout, stderr) {
+    	    // 	console.log('stdout : ' + stdout);
+    	    // 	console.log('stderr : ' + stderr);
+    	    // 	if(error != null) {
+    	    // 	    console.log('exec error : ' + error);
+    	    // 	};
+	    // });
+
+
+	    var child = exec('mkdir -p ' + downloadsPath + modifiedArticleTitle, function(error, stdout, stderr) {
     	    	console.log('stdout : ' + stdout);
     	    	console.log('stderr : ' + stderr);
     	    	if(error != null) {
     	    	    console.log('exec error : ' + error);
     	    	};
 	    });
-
-
-	    var child = exec('mkdir -p ./downloads/' + modifiedArticleTitle, function(error, stdout, stderr) {
-    	    	    console.log('stdout : ' + stdout);
-    	    	    console.log('stderr : ' + stderr);
-    	    	    if(error != null) {
-    	    		console.log('exec error : ' + error);
-    	    	    };
-	    	});
 	    
 	    isTagOpen = false;
 	}
@@ -131,7 +133,7 @@ var crawling = function(url) {
 		
 		//		console.log(extractedUrl);
 
-		var child = exec('wget -P ./downloads/' + modifiedArticleTitle + ' ' + matches_array[i], function(error, stdout, stderr) {
+		var child = exec('wget -P ' + downloadsPath + modifiedArticleTitle + ' ' + matches_array[i], function(error, stdout, stderr) {
 		// var child = exec('wget -P downloads ' + matches_array[i], function(error, stdout, stderr) {
     		    console.log('stdout : ' + stdout);
     		    console.log('stderr : ' + stderr);
