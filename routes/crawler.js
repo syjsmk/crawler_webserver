@@ -6,7 +6,7 @@ var fs = require('fs');
 var util = require('util');
 
 var Iconv = require('iconv').Iconv;
-var iconv = new Iconv('EUC-KR', 'UTF-8//TRANSLIT//IGNORE');
+// var iconv = new Iconv('EUC-KR', 'UTF-8//TRANSLIT//IGNORE');
 
 var downloadsPath = process.env.HOME + '/crawlerDownloads/';
 
@@ -62,10 +62,10 @@ var parser = new htmlparser.Parser({
     }
 });
 
-// parser.write("qqqq<title>asdasd</title>ttttt");
+// Parser.Write("Qqqq<Title>Asdasd</Title>Ttttt");
 // parser.end();
 
-
+// TODO: page not found (404) error
 // TODO: url may become text + url (from mt2)
 // TODO: use htmlparser for extract article title from html for folder name
 var crawling = function(url) {
@@ -86,13 +86,29 @@ var crawling = function(url) {
 
     	var body = '';
 	var isEucKr = false;
+	var isUtf8 = false;
+	var charSet = '';
 
-	if(res.headers['content-type'].indexOf('euc-kr') != -1) {
-	    isEucKr = true;
+	var charsetStart = res.headers['content-type'].search('=') + 1;
+	var charsetEnd = res.headers['content-type'].length;
+	
+	if(charsetStart === 0) {
+	    console.log('chatset find error');
+	} else {
+	    charSet = res.headers['content-type'].substr(charsetStart, charsetEnd - 1);
+	    console.log('charset : ' + res.headers['content-type'].substr(charsetStart, charsetEnd - 1));
 	}
 
-	console.log('isEucKr : ' + isEucKr);
 
+	if(charSet === 'utf-8') {
+	    isUtf8 = true;
+	}
+
+	var iconv = new Iconv(charSet, 'UTF-8//TRANSLIT//IGNORE');
+
+
+	console.log('isUtf8 : ' + isUtf8);
+	
 	// console.log(res.headers);
 	// console.log(res.headers['content-type']);
 
@@ -100,10 +116,10 @@ var crawling = function(url) {
     	res.on('data', function(chunk) {
 	    // console.log(chunk);
 
-	    if(isEucKr) {
-		body += iconv.convert(chunk).toString('UTF-8');
-	    } else {
+	    if(isUtf8) {
 		body += chunk;
+	    } else {
+		body += iconv.convert(chunk).toString('UTF-8');
 	    }
 
 
