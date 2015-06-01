@@ -68,13 +68,15 @@ var parser = new htmlparser.Parser({
 // TODO: page not found (404) error
 // TODO: url may become text + url (from mt2)
 // TODO: use htmlparser for extract article title from html for folder name
-// TODO: check -s.jpg
+
+// TODO: fucking euc-jp  http://himasoku.com/archives/51904618.html #MT2
 var crawling = function(url) {
 	// console.log('url in crawling');
 	// console.log(url);    
 
     // TODO: update regex for other site.
-    var regex = /http[^\s]*jpg/gi;
+    // var regex = /http[^\s]*jpg/gi;
+    var regex = /http:\/\/[a-zA-Z0-9_./-]+jpg/gi;
     
 
     console.log('url : ' + url);
@@ -147,7 +149,7 @@ var crawling = function(url) {
 	    // write picture files using wget
 	    for(var i = 0; i < matches_array.length; i ++) {
 		// console.log(matches_array[i].replace('-s', '') + '   ' + i);
-		// console.log(matches_array[i] + '   ' + i);
+		console.log(matches_array[i] + '   ' + i);
 		
 		//		console.log(extractedUrl);
 
