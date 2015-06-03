@@ -7,6 +7,7 @@ var util = require('util');
 
 var Iconv = require('iconv').Iconv;
 // var iconv = new Iconv('EUC-KR', 'UTF-8//TRANSLIT//IGNORE');
+var jconv = require('jconv');
 
 var downloadsPath = process.env.HOME + '/crawlerDownloads/';
 
@@ -35,6 +36,8 @@ var parser = new htmlparser.Parser({
 	if(isTagOpen === true) {
 	    articleTitle = text;
 	    modifiedArticleTitle = articleTitle.replace(/[\s']/gi, '');
+	    // modifiedArticleTitle = modifiedArticleTitle.replace(/\(/gi, '');
+	    // modifiedArticleTitle = modifiedArticleTitle.replace(/\)/gi, '');
 
 	    console.log('article Title : ' + articleTitle);
 	    console.log('modified Title : ' + modifiedArticleTitle);
@@ -88,8 +91,9 @@ var crawling = function(url) {
     // http.get('http://otanews.livedoor.biz/archives/52018592.html', function(res) {
 
     	var body = '';
-	var isEucKr = false;
 	var isUtf8 = false;
+	var isEucJp = false;
+	var isEucKr = false;
 	var charSet = '';
 
 	var charsetStart = res.headers['content-type'].search('=') + 1;
@@ -98,20 +102,23 @@ var crawling = function(url) {
 	if(charsetStart === 0) {
 	    console.log('chatset find error');
 	} else {
-	    charSet = res.headers['content-type'].substr(charsetStart, charsetEnd - 1);
-	    console.log('charset : ' + res.headers['content-type'].substr(charsetStart, charsetEnd - 1));
+	    charSet = res.headers['content-type'].substr(charsetStart, charsetEnd - 1).toUpperCase();
+	    console.log('charset : ' + charSet.toUpperCase());
 	}
 
 
-	if(charSet === 'utf-8') {
+	if(charSet === 'EUC-JP') {
+	    isEucJp = true;
+	} else if(charSet === 'UTF-8') {
 	    isUtf8 = true;
+	} else if(charSet === 'EUC-KR') {
+	    isEucKr = true;
 	}
 
 	var iconv = new Iconv(charSet, 'UTF-8//TRANSLIT//IGNORE');
+	// var iconv = new Iconv(charSet, 'UTF-8//TRANSLIT');
 
 
-	console.log('isUtf8 : ' + isUtf8);
-	
 	// console.log(res.headers);
 	// console.log(res.headers['content-type']);
 
@@ -122,7 +129,19 @@ var crawling = function(url) {
 	    if(isUtf8) {
 		body += chunk;
 	    } else {
-		body += iconv.convert(chunk).toString('UTF-8');
+		
+		// body += iconv.convert(chunk).toString('UTF-8');
+		if(isEucJp) {
+		    var convertTemp = jconv.convert(chunk, 'EUCJP', 'UTF8').toString();
+		    body += convertTemp.replace(/(\(|\))/gi, '');
+
+		    // body += jconv.convert(chunk, 'EUCJP', 'UTF8');
+		    // modifiedArticleTitle = modifiedArticleTitle.replace(/\(/gi, '');
+		} else if(isEucKr) {
+		    console.log('eeeeeeeeeeeeeeeeee');
+		    body += iconv.convert(chunk).toString('UTF-8');
+		}
+
 	    }
 
 

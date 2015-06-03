@@ -22,6 +22,7 @@
     "connect-multiparty": "1.2.5",
     "htmlparser2": "3.8.2",
     "has-unicode": "1.0.0",
-    "iconv": "2.1.6"
+    "iconv": "2.1.7",
+    "jconv": "0.1.5"  
   }
 }
